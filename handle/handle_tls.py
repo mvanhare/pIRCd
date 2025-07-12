@@ -28,11 +28,8 @@ def create_ctx(cert, key, name=None):
             missing = 1
 
         if missing:
-            answer = input("You have missing TLS files. Would you like to generate now? [Y/n] ")
-            if not answer.strip() or answer.strip().lower() == 'y':
-                generate_cert(key, cert, name)
-            else:
-                exit()
+            print("You have missing TLS files. Generating now...")
+            generate_cert(key, cert, name)
 
         tlsctx = SSL.Context(method=SSL.TLS_METHOD)
         tlsctx.set_options(SSL.OP_NO_SSLv2 | SSL.OP_NO_SSLv3 | SSL.OP_NO_TLSv1 | SSL.OP_NO_TLSv1_1)
@@ -68,32 +65,12 @@ def generate_cert(key_out, cert_out, name):
     cert = crypto.X509()
     # https://cryptography.io/en/latest/x509/tutorial/#creating-a-self-signed-certificate
 
-    default_C = "NL"
-    default_ST = "Some-Province"
-    default_L = "Amsterdam"
-    default_OU = "Example Ltd"
-    default_CN = name
-    C = input(f"Country code [{default_C}]: ")
-    if not C:
-        C = default_C
-    ST = input(f"Province or state [{default_ST}]: ")
-    if not ST:
-        ST = default_ST
-    L = input(f"Locality name (eg, city) [{default_L.strip()}]: ")
-    if not L:
-        L = default_L
-    OU = input(f"Organization [{default_OU}]: ")
-    if not OU:
-        OU = default_OU
-    CN = input(f"Common Name [{default_CN.strip()}]: ")
-    if not CN:
-        CN = default_CN
     print("Generating key pair, please wait...")
-    cert.get_subject().C = C  # Country
-    cert.get_subject().ST = ST  # State or province
-    cert.get_subject().L = L  # Locality name
-    cert.get_subject().OU = OU  # Organisation name
-    cert.get_subject().CN = CN  # Common name
+    cert.get_subject().C = "US"
+    cert.get_subject().ST = "CA"
+    cert.get_subject().L = "San Francisco"
+    cert.get_subject().OU = "ProvisionIRCd"
+    cert.get_subject().CN = IRCD.me.name
     cert.set_serial_number(1000)
     cert.gmtime_adj_notBefore(0)
     cert.gmtime_adj_notAfter(10 * 365 * 24 * 60 * 60)
