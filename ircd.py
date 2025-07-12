@@ -15,10 +15,6 @@ if __name__ == "__main__":
         logging.error("Python version 3.10 or higher is required.")
         sys.exit()
 
-    if sys.platform.startswith("linux") and os.geteuid() == 0:
-        logging.error("Do not run as root!")
-        sys.exit()
-
     parser = argparse.ArgumentParser(description="ProvisionIRCd")
     parser.add_argument("-c", "--conf", help="Relative path to main configuration file", default="ircd.conf")
     parser.add_argument("--debug", help="Show debug output in console", action="store_true")
